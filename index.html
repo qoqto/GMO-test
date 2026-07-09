@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>(재미로 보는) 나에게 맞는 LMO는?</title>
+    <title>(재미로 보는) 나와 맞는 LMO는?</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js" crossorigin="anonymous"></script>
     <style>
         :root {
             --primary-color: #52b788;
@@ -191,19 +190,19 @@
             transform: translateY(-1px);
         }
 
-        .btn-reset,
         .btn-prev {
             background-color: #e2f0e7;
             color: #40916c;
         }
 
-        .btn-reset:hover,
         .btn-prev:hover {
             background-color: #cbdad0;
         }
 
-        .btn-submit:disabled {
+        .btn-submit:disabled,
+        .btn-prev:disabled {
             background-color: #a8d5ba;
+            color: #ffffff;
             cursor: not-allowed;
             box-shadow: none;
             transform: none;
@@ -286,7 +285,7 @@
 
         .share-buttons {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
         }
 
@@ -307,11 +306,6 @@
         .share-copy {
             background: #e2f0e7;
             color: #2d6a4f;
-        }
-
-        .share-kakao {
-            background: #FEE500;
-            color: #191919;
         }
 
         .share-feedback {
@@ -378,8 +372,8 @@
 <div class="container">
     <div id="quiz-section">
         <header>
-            <h1>🌽 나랑 맞는 LMO는? 🫛</h1>
-            <p>각 문항에서 가장 나와 가까운 답을 하나 선택하세요. 나에게 꼭 맞는 유전자변형생명체를 찾아 드립니다!</p>
+            <h1>🌽 나와 맞는 LMO는? 🫛</h1>
+            <p>각 문항에서 가장 나와 가까운 답을 하나 선택하세요. 나에게 꼭 맞는 LMO를 찾아 드립니다!</p>
             <p class="header-note">* LMO(Living Modified Organism, 유전자변형생물체)는 현대 생명공학기술을 이용해 새롭게 조합된 유전물질을 포함한 생물체를 말합니다.</p>
         </header>
 
@@ -398,7 +392,6 @@
             <div class="btn-container">
                 <button type="button" class="btn-prev" id="prev-btn" onclick="goPrevQuestion()">이전</button>
                 <button type="button" class="btn-submit" id="next-btn" onclick="goNextQuestion()">다음</button>
-                <button type="button" class="btn-reset" onclick="resetQuiz()">초기화</button>
             </div>
         </form>
     </div>
@@ -426,7 +419,6 @@
             <div class="share-buttons">
                 <button type="button" class="share-btn share-general" onclick="shareResult()">공유하기</button>
                 <button type="button" class="share-btn share-copy" onclick="copyResultLink()">링크 복사</button>
-                <button type="button" class="share-btn share-kakao" onclick="shareToKakao()">카카오톡 공유</button>
             </div>
             <div id="share-feedback" class="share-feedback"></div>
         </div>
@@ -434,14 +426,12 @@
         <div class="cta-container">
             <a href="https://www.biosafety.or.kr" target="_blank" rel="noopener noreferrer" class="cta-button btn-portal">🌐 GMO 정보포털 방문하기</a>
             <a href="https://www.youtube.com/channel/UCoK8LwKGq5l6sezWzkDCcXg" target="_blank" rel="noopener noreferrer" class="cta-button btn-youtube">📺 GMO TV 유튜브 보러가기</a>
-            <button type="button" class="btn-reset" onclick="resetQuiz()" style="margin-top:10px;">🔄 다시 테스트하기</button>
+            <button type="button" class="btn-prev" onclick="resetQuiz()" style="margin-top:10px;">🔄 다시 테스트하기</button>
         </div>
     </div>
 </div>
 
 <script>
-const KAKAO_JAVASCRIPT_KEY = '여기에_카카오_자바스크립트_키_입력';
-
 const RESULT_INFO = {
     "ISTJ": ["가뭄 저항성 옥수수", "ISTJ.png"],
     "ISFP": ["갈변 방지 감자", "ISFP.png"],
@@ -544,7 +534,6 @@ const QUESTIONS = [
 
 let currentQuestion = 0;
 const answers = new Array(QUESTIONS.length).fill(null);
-let latestResultKey = '';
 let latestResultName = '';
 
 const questionsContainer = document.getElementById('questions-container');
@@ -554,14 +543,6 @@ const progressFill = document.getElementById('progress-fill');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
 const shareFeedback = document.getElementById('share-feedback');
-
-function initKakao() {
-    if (!window.Kakao) return;
-    if (!KAKAO_JAVASCRIPT_KEY || KAKAO_JAVASCRIPT_KEY === '여기에_카카오_자바스크립트_키_입력') return;
-    if (!window.Kakao.isInitialized()) {
-        window.Kakao.init(KAKAO_JAVASCRIPT_KEY);
-    }
-}
 
 function renderQuestion() {
     const q = QUESTIONS[currentQuestion];
@@ -617,11 +598,9 @@ function updateProgress() {
 }
 
 function updateButtons() {
-    prevBtn.style.display = currentQuestion === 0 ? 'none' : 'block';
-
+    prevBtn.style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
     const isAnswered = answers[currentQuestion] !== null;
     nextBtn.disabled = !isAnswered;
-
     nextBtn.innerText = currentQuestion === QUESTIONS.length - 1 ? '🌿 결과 확인하기' : '다음';
 }
 
@@ -648,26 +627,11 @@ function goPrevQuestion() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function getBaseDir() {
-    const path = window.location.pathname;
-    return path.endsWith('/') ? path : path.substring(0, path.lastIndexOf('/') + 1);
-}
-
-function getImagePath(filename) {
-    return `./images/${filename}`;
-}
-
-function getImageUrl(filename) {
-    return `${window.location.origin}${getBaseDir()}images/${filename}`;
-}
-
 function getShareData() {
     const title = `나에게 맞는 LMO 테스트 결과: ${latestResultName}`;
     const text = `내 결과는 "${latestResultName}"! 너도 테스트해봐 🌽`;
     const url = window.location.href;
-    const imageFile = RESULT_INFO[latestResultKey]?.[1] || 'default.png';
-    const imageUrl = getImageUrl(imageFile);
-    return { title, text, url, imageUrl };
+    return { title, text, url };
 }
 
 function showFeedback(message) {
@@ -713,39 +677,6 @@ async function shareResult() {
     }
 }
 
-function shareToKakao() {
-    initKakao();
-
-    if (!window.Kakao || !window.Kakao.isInitialized()) {
-        showFeedback('카카오 공유를 쓰려면 JavaScript 키 설정이 필요해요.');
-        return;
-    }
-
-    const { title, text, url, imageUrl } = getShareData();
-
-    window.Kakao.Share.sendDefault({
-        objectType: 'feed',
-        content: {
-            title: title,
-            description: text,
-            imageUrl: imageUrl,
-            link: {
-                mobileWebUrl: url,
-                webUrl: url
-            }
-        },
-        buttons: [
-            {
-                title: '테스트 하러 가기',
-                link: {
-                    mobileWebUrl: url,
-                    webUrl: url
-                }
-            }
-        ]
-    });
-}
-
 function showResult() {
     const scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
     let antiGmoCount = 0;
@@ -784,28 +715,27 @@ function showResult() {
         resultKey = 'ANTI_GMO';
     } else {
         resultKey = [
-            scores.E >= scores.I ? "E" : "I",
-            scores.S >= scores.N ? "S" : "N",
-            scores.T >= scores.F ? "T" : "F",
-            scores.J >= scores.P ? "J" : "P"
+            scores["E"] >= scores["I"] ? "E" : "I",
+            scores["S"] >= scores["N"] ? "S" : "N",
+            scores["T"] >= scores["F"] ? "T" : "F",
+            scores["J"] >= scores["P"] ? "J" : "P"
         ].join('');
     }
-
-    latestResultKey = resultKey;
 
     const [organism, filename] = RESULT_INFO[resultKey] || ["결과 생물", "default.png"];
     latestResultName = organism;
 
-    const resultImage = document.getElementById('result-image');
-    resultImage.src = getImagePath(filename);
-    resultImage.alt = `${organism} 이미지`;
-    resultImage.onerror = function() {
+    document.getElementById('result-mbti-text').innerText = organism;
+    document.getElementById('result-image').src = `./images/${filename}`;
+    document.getElementById('result-image').onerror = function() {
         this.src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
     };
 
-    document.getElementById('result-mbti-text').innerText = organism;
-    document.getElementById('result-desc').innerText =
-        resultKey === 'ANTI_GMO' ? RESULT_DESC.ANTI_GMO : RESULT_DESC.DEFAULT;
+    if (resultKey === 'ANTI_GMO') {
+        document.getElementById('result-desc').innerText = RESULT_DESC.ANTI_GMO;
+    } else {
+        document.getElementById('result-desc').innerText = RESULT_DESC.DEFAULT;
+    }
 
     document.getElementById('quiz-section').style.display = 'none';
     document.getElementById('result-section').style.display = 'block';
@@ -817,7 +747,6 @@ function resetQuiz() {
         answers[i] = null;
     }
     currentQuestion = 0;
-    latestResultKey = '';
     latestResultName = '';
     document.getElementById('quiz-form').reset();
     document.getElementById('result-section').style.display = 'none';
@@ -828,7 +757,6 @@ function resetQuiz() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-initKakao();
 renderQuestion();
 </script>
 </body>
