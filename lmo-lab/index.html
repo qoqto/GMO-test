@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="연구비 10억 원으로 나만의 가상 LMO 연구 프로젝트를 설계하는 참여형 바이오안전 콘텐츠" />
+  <title>LMO LAB | 나만의 LMO 연구소</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">🧬</div>
+        <div>
+          <span>BIOSAFETY MINI GAME</span>
+          <strong>LMO LAB</strong>
+        </div>
+      </div>
+      <button id="resetTop" class="ghost-btn hidden" type="button">처음부터</button>
+    </header>
+
+    <section id="startScreen" class="screen active">
+      <div class="panel hero-panel">
+        <span class="notice-badge">🎉 국가 연구개발사업에 선정되었습니다!</span>
+        <p class="lab-label">🧬 LMO LAB</p>
+        <h1>연구비 10억 원으로<br>새로운 LMO 프로젝트를 설계하세요.</h1>
+        <p class="hero-copy">
+          인류가 직면한 문제를 하나 선택하고, 연구 생물과 특성, 이용 환경을 결정해
+          나만의 가상 LMO 연구 프로젝트를 완성해보세요.
+        </p>
+
+        <div class="grant-grid">
+          <div class="grant-card">
+            <span>💰 총 연구비</span>
+            <strong>10억 원</strong>
+          </div>
+          <div class="grant-card">
+            <span>⏱ 연구기간</span>
+            <strong>5년</strong>
+          </div>
+        </div>
+
+        <div class="mission-box">
+          <strong>🎯 YOUR MISSION</strong>
+          <p>연구 목적에 어울리는 조합을 설계하고 마지막 단계에서 바이오안전 포인트까지 확인하세요.</p>
+        </div>
+
+        <button id="startBtn" class="primary-btn" type="button">연구 프로젝트 시작하기 →</button>
+        <p class="fineprint">※ 연구비와 연구기간은 게임을 위한 가상 수치입니다. 본 콘텐츠는 LMO 활용 및 바이오안전 개념을 소개하는 교육·홍보용 시뮬레이션이며 실제 개발·실험 절차를 안내하지 않습니다.</p>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <div class="game-status">
+        <div class="progress-area">
+          <div class="progress-meta">
+            <span id="stepCount">STEP 1 / 4</span>
+            <span id="stepName">연구 분야</span>
+          </div>
+          <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+        </div>
+        <div class="budget-display">
+          <small>남은 연구비</small>
+          <strong id="budgetText">10억</strong>
+        </div>
+      </div>
+
+      <div class="panel question-panel">
+        <button id="backBtn" class="back-btn hidden" type="button">← 이전 단계</button>
+        <span id="stepTag" class="step-tag">STEP 1 · FIELD</span>
+        <h2 id="questionTitle">어떤 문제를 해결하고 싶나요?</h2>
+        <p id="questionDesc" class="question-desc">연구 분야를 선택하세요. 이후 선택지는 연구 목적에 맞게 달라집니다.</p>
+        <div id="options" class="option-grid"></div>
+        <div id="budgetNote" class="budget-note">💡 연구비는 모든 선택이 끝난 뒤 프로젝트 결과에 반영됩니다.</div>
+      </div>
+    </section>
+
+    <section id="resultScreen" class="screen result-screen">
+      <span class="complete-badge">PROJECT COMPLETE</span>
+      <p class="result-lead">당신이 설계한 가상 LMO 연구 프로젝트</p>
+
+      <article id="resultCard" class="result-card">
+        <div id="projectIcon" class="project-icon">🧬</div>
+        <p id="projectField" class="project-field">환경 바이오</p>
+        <h2 id="projectTitle" class="project-title">환경오염 감지 미생물</h2>
+        <p id="projectSubtitle" class="project-subtitle"></p>
+
+        <div class="spec-list">
+          <div class="spec-row"><span>🎯 연구 목적</span><strong id="specField"></strong></div>
+          <div class="spec-row"><span>🧫 연구 생물</span><strong id="specOrganism"></strong></div>
+          <div class="spec-row"><span>🧬 연구 특성</span><strong id="specTrait"></strong></div>
+          <div class="spec-row"><span>🏢 이용 형태</span><strong id="specUse"></strong></div>
+        </div>
+
+        <div class="budget-summary">
+          <div><span>총 연구비</span><strong>10억 원</strong></div>
+          <div class="remaining"><span>남은 연구비</span><strong id="resultBudget"></strong></div>
+        </div>
+
+        <div class="explain-box">
+          <strong>🔎 이 프로젝트는 이렇게 활용할 수 있어요</strong>
+          <p id="projectExplanation"></p>
+        </div>
+
+        <div class="biosafety-box">
+          <strong>🛡️ BIOSAFETY CHECK</strong>
+          <p id="biosafetyText"></p>
+          <span id="biosafetyLevel" class="safety-chip"></span>
+        </div>
+
+        <a id="portalLink" class="portal-link" href="https://www.biosafety.or.kr" target="_blank" rel="noopener noreferrer">LMO 안전관리 알아보기 →</a>
+        <div class="result-footer"><span>나만의 LMO 연구소</span><span>#LMO #바이오안전</span></div>
+      </article>
+
+      <div class="result-actions">
+        <button id="shareBtn" class="primary-btn" type="button">결과 공유하기</button>
+        <button id="restartBtn" class="secondary-btn" type="button">다른 프로젝트 만들기</button>
+      </div>
+      <p id="shareMessage" class="share-message" aria-live="polite"></p>
+    </section>
+
+    <footer>
+      본 콘텐츠는 교육·홍보용 가상 시뮬레이션이며 실제 연구비, 실험 방법 또는 규제 판단을 의미하지 않습니다.
+    </footer>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
